@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+/* Dark mode is driven by a `.dark` class on <html> (see useTheme). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------- Design tokens ---------- */
+@theme {
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-bg: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-ink: var(--c-ink);
+  --color-muted: var(--c-muted);
+  --color-lav: var(--c-lav);
+  --color-plum: var(--c-plum);
+  --color-pink: var(--c-pink);
+  --color-lav-soft: var(--c-lav-soft);
+  --color-pink-soft: var(--c-pink-soft);
+  --color-line: var(--c-line);
+  --color-on-plum: var(--c-on-plum);
+  --color-banner: var(--c-banner);
+
+  --radius-blob: 2rem;
+}
+
+:root {
+  --c-bg: #fffdf7;          /* cream */
+  --c-surface: #ffffff;
+  --c-ink: #292431;
+  --c-muted: #6c6672;       /* #77717D nudged 1 step darker for AA contrast on lavender tints */
+  --c-lav: #b69acf;
+  --c-plum: #76558f;
+  --c-pink: #eac5d5;
+  --c-lav-soft: #f1eaf7;
+  --c-pink-soft: #f9ecf1;
+  --c-line: #e6dcef;
+  --c-on-plum: #ffffff;
+  --c-banner: #7d619e;      /* the "My Resume" header purple, deepened for white-text contrast */
+  --c-dot: rgba(118, 85, 143, 0.09);
+  color-scheme: light;
+}
+
+.dark {
+  --c-bg: #1a1621;
+  --c-surface: #241f2c;
+  --c-ink: #f2edf7;
+  --c-muted: #b7aec2;
+  --c-lav: #b69acf;
+  --c-plum: #cdb3e4;
+  --c-pink: #eac5d5;
+  --c-lav-soft: #2d2638;
+  --c-pink-soft: #352833;
+  --c-line: #3a3246;
+  --c-on-plum: #1a1621;
+  --c-banner: #4e3d63;
+  --c-dot: rgba(205, 179, 228, 0.07);
+  color-scheme: dark;
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-bg text-ink font-sans antialiased;
+    /* soft dotted "paper" */
+    background-image: radial-gradient(var(--c-dot) 1.2px, transparent 1.2px);
+    background-size: 22px 22px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display;
+    font-optical-sizing: auto;
+    letter-spacing: -0.01em;
+  }
+  ::selection {
+    background: var(--c-pink);
+    color: #292431;
+  }
+  :focus-visible {
+    outline: 2.5px solid var(--c-plum);
+    outline-offset: 3px;
+    border-radius: 10px;
+  }
+}
+
+/* ---------- Components ---------- */
+@layer components {
+  /* Double-outlined card, echoing the resume's framed boxes */
+  .frame {
+    @apply relative rounded-[1.75rem] border-2 border-lav/55 bg-surface;
+  }
+  .frame::before {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border-radius: 1.35rem;
+    border: 1.5px dashed color-mix(in oklab, var(--c-lav) 45%, transparent);
+    pointer-events: none;
+  }
+
+  .sticker {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-lav/50 bg-lav-soft px-3 py-1 text-xs font-semibold tracking-wide text-plum uppercase;
+  }
+
+  .btn-primary,
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 select-none;
+  }
+  .btn-primary {
+    @apply bg-plum text-on-plum;
+    box-shadow: 0 4px 0 0 color-mix(in oklab, var(--c-plum) 55%, black);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 0 color-mix(in oklab, var(--c-plum) 55%, black);
+  }
+  .btn-primary:active {
+    transform: translateY(2px);
+    box-shadow: none;
+  }
+  .btn-ghost {
+    @apply border-2 border-plum/70 text-plum hover:bg-lav-soft;
+  }
+  .icon-btn {
+    @apply inline-grid size-10 place-items-center rounded-full border border-line bg-surface text-ink transition-colors hover:border-lav hover:bg-lav-soft hover:text-plum;
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded-full border border-line bg-surface px-2.5 py-0.5 text-xs font-medium text-ink/80;
+  }
+
+  .section {
+    @apply relative mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-20;
+  }
+}
+
+/* ---------- Decorative motion ---------- */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-8px) rotate(var(--r, 0deg)); }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  50% { opacity: 0.55; transform: scale(0.82) rotate(12deg); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@utility animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+@utility animate-twinkle {
+  animation: twinkle 3.2s ease-in-out infinite;
+}
+@utility animate-wiggle {
+  animation: wiggle 2.6s ease-in-out infinite;
+}
+@utility animate-draw {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: draw 1.4s 0.6s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .animate-draw { stroke-dashoffset: 0; }
+}
